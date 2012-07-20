@@ -9,7 +9,7 @@
     <!--Snapshot means a version is downloaded every runtime-->
     <version>1.0-SNAPSHOT</version>
 
-    <name>Renal Patient View Web Tests</name>
+    <name>Patient View Web Tests</name>
     <url>https://www.renalpatientview.org</url>
 
     <properties>
