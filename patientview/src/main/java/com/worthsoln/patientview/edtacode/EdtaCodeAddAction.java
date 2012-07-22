@@ -1,32 +1,47 @@
 package com.worthsoln.patientview.edtacode;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
+import com.opensymphony.xwork2.ActionSupport;
 import com.worthsoln.HibernateUtil;
-import com.worthsoln.patientview.logon.LogonUtils;
-import com.worthsoln.database.action.DatabaseAction;
+import net.sf.hibernate.Session;
+import net.sf.hibernate.Transaction;
 
-public class EdtaCodeAddAction extends DatabaseAction {
+public class EdtaCodeAddAction extends ActionSupport {
 
-    public ActionForward execute(
-        ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
-        EdtaCode objectToBuild = new EdtaCode();
-        String attributeName = "edtaCode";
+    private static final long serialVersionUID = 1L;
 
-        HibernateUtil.extractDataFromFormMakeObjectAndAdd(objectToBuild, form, request, attributeName);
+    private EdtaCode edtaCode;
 
-        return LogonUtils.logonChecks(mapping, request);
+    @Override
+    public String execute() throws Exception {
+
+
+        Session session = HibernateUtil.currentSession();
+        Transaction tx = session.beginTransaction();
+
+        session.save(edtaCode);
+
+        tx.commit();
+        HibernateUtil.closeSession();
+
+
+        return SUCCESS;
     }
 
-    public String getDatabaseName() {
-        return "patientview";
+    public EdtaCode getEdtaCode() {
+        return edtaCode;
     }
 
-    public String getIdentifier() {
-        return "edtaCode";
+    public void setEdtaCode(EdtaCode edtaCode) {
+        this.edtaCode = edtaCode;
     }
+
+/*
+    public String getEdtaCode() {
+        return edtaCode;
+    }
+
+    public void setEdtaCode(String edtaCode) {
+        eCode.setEdtaCode(edtaCode);
+    }
+*/
 }

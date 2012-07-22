@@ -536,6 +536,7 @@
       <forward name="success" path="/control/edta_code_add_input.jsp"/>
     </action>
 
+<!--
     <action path="/control/edtaCodeAdd"
             type="com.worthsoln.patientview.edtacode.EdtaCodeAddAction"
             name="edtaCodeForm"
@@ -544,7 +545,7 @@
       <forward name="input" path="/control/edta_code_add_input.jsp"/>
       <forward name="success" path="/control/edta_code_edit.jsp"/>
     </action>
-
+-->
     <action path="/control/edtaCodeDelete"
             type="com.worthsoln.patientview.edtacode.EdtaCodeDeleteAction"
             name="edtaCodeForm"

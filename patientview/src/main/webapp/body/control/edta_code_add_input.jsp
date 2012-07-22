@@ -1,6 +1,7 @@
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 <%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean" %>
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
+<%@ taglib uri="/struts-tags" prefix="s" %>
 
 <html:xhtml/>
 
@@ -8,19 +9,26 @@
 
 <html:errors />
 
-<html:form action="/control/edtaCodeAdd">
+<s:form action="edtaCodeAdd">
+
+<%--
   <html:hidden property="linkType" name="codeType" />
+--%>
+
+    <s:hidden name="edtaCode.linkType" value="%{#session.codeType}"/>
+
 <table cellpadding="3" >
     <tr>
       <td><img src="images/space.gif" height="10" /> </td>
     </tr>
     <tr>
       <td><b>Code</b></td>
-      <td><html:text property="edtaCode" /></td>
+      <td><s:textfield name="edtaCode.edtaCode" /></td>
     </tr>
+
     <tr>
       <td><b>Description</b></td>
-      <td><html:text property="description" /></td>
+      <td><s:textfield name="edtaCode.description" /></td>
     </tr>
     <tr>
       <td><img src="images/space.gif" height="10" /> </td>
@@ -32,67 +40,68 @@
     </tr>
     <tr>
       <td><b>Medical Link 1</b></td>
-      <td><html:text property="medicalLink01" /></td>
-      <td><html:text property="medicalLinkText01" /></td>
+      <td><s:textfield name="edtaCode.medicalLink01" /></td>
+      <td><s:textfield name="edtaCode.medicalLinkText01" /></td>
     </tr>
     <tr>
       <td><b>Medical Link 2</b></td>
-      <td><html:text property="medicalLink02" /></td>
-      <td><html:text property="medicalLinkText02" /></td>
+      <td><s:textfield name="edtaCode.medicalLink02" /></td>
+      <td><s:textfield name="edtaCode.medicalLinkText02" /></td>
     </tr>
     <tr>
       <td><b>Medical Link 3</b></td>
-      <td><html:text property="medicalLink03" /></td>
-      <td><html:text property="medicalLinkText03" /></td>
+      <td><s:textfield name="edtaCode.medicalLink03" /></td>
+      <td><s:textfield name="edtaCode.medicalLinkText03" /></td>
     </tr>
     <tr>
       <td><b>Medical Link 4</b></td>
-      <td><html:text property="medicalLink04" /></td>
-      <td><html:text property="medicalLinkText04" /></td>
+      <td><s:textfield name="edtaCode.medicalLink04" /></td>
+      <td><s:textfield name="edtaCode.medicalLinkText04" /></td>
     </tr>
     <tr>
       <td><b>Medical Link 5</b></td>
-      <td><html:text property="medicalLink05" /></td>
-      <td><html:text property="medicalLinkText05" /></td>
+      <td><s:textfield name="edtaCode.medicalLink05" /></td>
+      <td><s:textfield name="edtaCode.medicalLinkText05" /></td>
     </tr>
     <tr>
       <td><b>Medical Link 6</b></td>
-      <td><html:text property="medicalLink06" /></td>
-      <td><html:text property="medicalLinkText06" /></td>
+      <td><s:textfield name="edtaCode.medicalLink06" /></td>
+      <td><s:textfield name="edtaCode.medicalLinkText06" /></td>
     </tr>
     <tr>
       <td><b>Patient Link 1</b></td>
-      <td><html:text property="patientLink01" /></td>
-      <td><html:text property="patientLinkText01" /></td>
+      <td><s:textfield name="edtaCode.patientLink01" /></td>
+      <td><s:textfield name="edtaCode.patientLinkText01" /></td>
     </tr>
     <tr>
       <td><b>Patient Link 2</b></td>
-      <td><html:text property="patientLink02" /></td>
-      <td><html:text property="patientLinkText02" /></td>
+      <td><s:textfield name="edtaCode.patientLink02" /></td>
+      <td><s:textfield name="edtaCode.patientLinkText02" /></td>
     </tr>
     <tr>
       <td><b>Patient Link 3</b></td>
-      <td><html:text property="patientLink03" /></td>
-      <td><html:text property="patientLinkText03" /></td>
+      <td><s:textfield name="edtaCode.patientLink03" /></td>
+      <td><s:textfield name="edtaCode.patientLinkText03" /></td>
     </tr>
     <tr>
       <td><b>Patient Link 4</b></td>
-      <td><html:text property="patientLink04" /></td>
-      <td><html:text property="patientLinkText04" /></td>
+      <td><s:textfield name="edtaCode.patientLink04" /></td>
+      <td><s:textfield name="edtaCode.patientLinkText04" /></td>
     </tr>
     <tr>
       <td><b>Patient Link 5</b></td>
-      <td><html:text property="patientLink05" /></td>
-      <td><html:text property="patientLinkText05" /></td>
+      <td><s:textfield name="edtaCode.patientLink05" /></td>
+      <td><s:textfield name="edtaCode.patientLinkText05" /></td>
     </tr>
     <tr>
       <td><b>Patient Link 6</b></td>
-      <td><html:text property="patientLink06" /></td>
-      <td><html:text property="patientLinkText06" /></td>
+      <td><s:textfield name="edtaCode.patientLink06" /></td>
+      <td><s:textfield name="edtaCode.patientLinkText06" /></td>
     </tr>
+
      <tr>
-       <td><html:submit value="Add" styleClass="formbutton" /></td>
+       <td><s:submit /></td>
      </tr>
  </table>
 
-</html:form>
+</s:form>
