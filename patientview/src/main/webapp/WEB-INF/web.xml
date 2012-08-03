@@ -96,5 +96,14 @@
                 /META-INF/struts-logic.tld
             </taglib-location>
         </taglib>
+
+        <taglib>
+            <taglib-uri>
+                http://struts.apache.org/tags-html
+            </taglib-uri>
+            <taglib-location>
+                /META-INF/struts-html.tld
+            </taglib-location>
+        </taglib>
     </jsp-config>
 </web-app>
