@@ -28,10 +28,9 @@ import com.worthsoln.patientview.model.User;
 import com.worthsoln.patientview.model.Unit;
 import com.worthsoln.patientview.model.Specialty;
 import com.worthsoln.patientview.model.enums.SendEmailEnum;
+import com.worthsoln.repository.UserDao;
 import com.worthsoln.repository.job.JobDao;
 import com.worthsoln.service.JobManager;
-import com.worthsoln.service.UserManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,9 +45,8 @@ public class JobManagerImpl implements JobManager {
     @Inject
     private JobDao jobDao;
 
-    @Autowired
-    private UserManager userManager;
-
+    @Inject
+    private UserDao userDao;
 
     @Override
     public void save(Job job) {
@@ -62,6 +60,6 @@ public class JobManagerImpl implements JobManager {
 
     @Override
     public List<User> getSpecialGroupUsers(User user, Specialty specialty, String userType, Unit unit) {
-        return userManager.getUsers(user, specialty, userType, unit);
+        return userDao.get(user, specialty, userType, unit);
     }
 }

@@ -28,20 +28,23 @@ import com.worthsoln.patientview.logon.UnitAdmin;
 import com.worthsoln.patientview.model.Specialty;
 import com.worthsoln.patientview.model.SpecialtyUserRole;
 import com.worthsoln.patientview.model.User;
-import com.worthsoln.patientview.model.Unit;
 import com.worthsoln.patientview.model.UserMapping;
+import com.worthsoln.security.UnitSecured;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Transactional(propagation = Propagation.REQUIRED)
+@Secured(value = { "ROLE_ANY_USER" })
 public interface UserManager {
 
     User getLoggedInUser();
 
     User get(Long id);
 
+    @UnitSecured(value = "UNIT_USER_READ_AUTH")
     User get(String username);
 
     String getLoggedInUserRole();
@@ -100,5 +103,4 @@ public interface UserManager {
 
     void removeUserFromRadar(Long userId);
 
-    List<User> getUsers(User user, Specialty specialty, String userType, Unit unit);
 }

@@ -28,14 +28,7 @@ import com.worthsoln.ibd.model.MyIbd;
 import com.worthsoln.ibd.model.Procedure;
 import com.worthsoln.patientview.XmlImportUtils;
 import com.worthsoln.patientview.logging.AddLog;
-import com.worthsoln.patientview.model.Centre;
-import com.worthsoln.patientview.model.Diagnostic;
-import com.worthsoln.patientview.model.Letter;
-import com.worthsoln.patientview.model.Medicine;
-import com.worthsoln.patientview.model.Patient;
-import com.worthsoln.patientview.model.Specialty;
-import com.worthsoln.patientview.model.TestResult;
-import com.worthsoln.patientview.model.Unit;
+import com.worthsoln.patientview.model.*;
 import com.worthsoln.service.CentreManager;
 import com.worthsoln.service.DiagnosticManager;
 import com.worthsoln.service.LetterManager;
@@ -48,6 +41,7 @@ import com.worthsoln.service.UnitManager;
 import com.worthsoln.service.ibd.IbdManager;
 import com.worthsoln.service.impl.SpringApplicationContextBean;
 import com.worthsoln.test.helpers.RepositoryHelpers;
+import com.worthsoln.test.helpers.SecurityHelpers;
 import com.worthsoln.test.helpers.impl.TestableResultsUpdater;
 import com.worthsoln.test.repository.BaseDaoTest;
 import com.worthsoln.utils.LegacySpringUtils;
@@ -107,6 +101,9 @@ public class ImporterTest extends BaseDaoTest {
     private RepositoryHelpers repositoryHelpers;
 
     @Inject
+    private SecurityHelpers securityHelpers;
+
+    @Inject
     private LogEntryManager logEntryManager;
 
     @Before
@@ -125,6 +122,10 @@ public class ImporterTest extends BaseDaoTest {
         mockSpecialty = repositoryHelpers.createSpecialty("Specialty1", "ten1", "A test specialty");
 
         mockUnit.setSpecialty(mockSpecialty);
+
+        User adminUser = repositoryHelpers.createUser("Username", "username@test.com", "pass", "Test User");
+        repositoryHelpers.createSpecialtyUserRole(mockSpecialty, adminUser, "unitadmin");
+        securityHelpers.loginAsUser(adminUser.getUsername(), mockSpecialty);
 
         unitManager.save(mockUnit);
     }

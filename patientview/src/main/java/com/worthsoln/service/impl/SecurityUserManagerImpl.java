@@ -23,13 +23,20 @@
 
 package com.worthsoln.service.impl;
 
+import com.worthsoln.patientview.model.User;
 import com.worthsoln.patientview.model.Specialty;
 import com.worthsoln.patientview.model.SpecialtyUserRole;
-import com.worthsoln.patientview.model.User;
+import com.worthsoln.patientview.model.UserMapping;
+import com.worthsoln.patientview.model.Unit;
 import com.worthsoln.repository.SpecialtyDao;
+import com.worthsoln.repository.UserDao;
+import com.worthsoln.repository.SpecialtyUserRoleDao;
+import com.worthsoln.repository.UserMappingDao;
 import com.worthsoln.security.model.SecurityUser;
 import com.worthsoln.service.SecurityUserManager;
+import com.worthsoln.service.UnitManager;
 import com.worthsoln.service.UserManager;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -47,6 +54,18 @@ public class SecurityUserManagerImpl implements SecurityUserManager {
 
     @Inject
     private UserManager userManager;
+
+    @Inject
+    private UnitManager unitManager;
+
+    @Inject
+    private UserMappingDao userMappingDao;
+
+    @Inject
+    private UserDao userDao;
+
+    @Inject
+    private SpecialtyUserRoleDao specialtyUserRoleDao;
 
     @Override
     public String getLoggedInUsername() {
@@ -198,5 +217,67 @@ public class SecurityUserManagerImpl implements SecurityUserManager {
         }
 
         return null;
+    }
+
+    @Override
+    public boolean userHasReadAccessToUnitUser(String username) {
+        boolean isUnitUser = false;
+        List<Unit> units = unitManager.getLoggedInUsersUnits();
+
+        List<UserMapping> userMappings = userMappingDao.getAll(username, getLoggedInSpecialty());
+
+        if (userMappings == null || userMappings.isEmpty()) {
+            return true;
+        }
+
+        for (Unit unit : units) {
+            for (UserMapping userMapping : userMappings) {
+                if (unit != null && userMapping != null && unit.getUnitcode().equals(userMapping.getUnitcode())) {
+                    isUnitUser = true;
+                    break;
+                }
+            }
+            if (isUnitUser) {
+                break;
+            }
+        }
+        return isUnitUser;
+    }
+
+    @Override
+    public User get(String username) {
+        return userDao.get(username);
+    }
+
+    @Override
+    public List<SpecialtyUserRole> getSpecialtyUserRoles(User user) {
+        return specialtyUserRoleDao.get(user);
+    }
+
+    @Override
+    public boolean userHasReadAccessToUnitFeedback(String unitCode) {
+
+        return userHasReadAccessToUnit(unitCode);
+    }
+
+    @Override
+    public boolean userHasReadAccessToUnit(String unitCode) {
+
+        if (StringUtils.isBlank(unitCode)) {
+            return true;
+        }
+
+        boolean isUnitUser = false;
+        List<Unit> units = unitManager.getLoggedInUsersUnits();
+
+        if (units != null && !units.isEmpty()) {
+            for (Unit unit : units) {
+                if (unit != null && unitCode.equals(unit.getUnitcode())) {
+                    isUnitUser = true;
+                    break;
+                }
+            }
+        }
+        return isUnitUser;
     }
 }
