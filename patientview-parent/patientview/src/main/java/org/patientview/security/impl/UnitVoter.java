@@ -22,9 +22,13 @@
  */
 package org.patientview.security.impl;
 
+import org.patientview.patientview.logon.PatientLogon;
+import org.patientview.patientview.logon.UnitAdmin;
+import org.patientview.patientview.model.User;
 import org.patientview.security.SecurityConfig;
 import org.patientview.security.UnitSecured;
 import org.patientview.security.model.SecurityUser;
+import org.patientview.service.PatientManager;
 import org.patientview.service.SecurityUserManager;
 import org.patientview.service.UnitManager;
 import org.patientview.service.UserManager;
@@ -70,7 +74,7 @@ public class UnitVoter implements AccessDecisionVoter {
      *  target is of class [org.patientview.service.impl.UnitManagerImpl]
      *
      *  collection: A list of ConfigAttribute, typically, SecurityConfig, which hold the attributes supplied by the
-     *  @Secured("ROLE_ANY_USER") annotation
+     *  @Secured("ROLE_USER") annotation
      */
     public int vote(Authentication authentication, Object o, Collection collection) {
 
@@ -140,11 +144,56 @@ public class UnitVoter implements AccessDecisionVoter {
 
         } else if (methodInvocation.getMethod().getDeclaringClass().getSimpleName()
                 .equals(UserManager.class.getSimpleName())) {
-            if (securityUserManager.userHasReadAccessToUnitUser(argument)) {
-                return ACCESS_GRANTED;
+
+            if (methodInvocation.getMethod().getName().equals(SecurityConfig.USER_MANAGER_SAVE)) {
+                return secureUserManagerSaveMethod(getUserFromArguments(methodInvocation));
             }
+
+            if (methodInvocation.getMethod().getName().equals(SecurityConfig.USER_MANAGER_GET)) {
+                if (securityUserManager.userHasReadAccessToUnitUser(argument)) {
+                    return ACCESS_GRANTED;
+                }
+            }
+
+            if (methodInvocation.getMethod().getName().equals(SecurityConfig.USER_MANAGER_SAVE_USER_FROM_UNIT_ADMIN)) {
+                if (securityUserManager.userHasReadAccessToUnitUser(argument)) {
+                    return ACCESS_GRANTED;
+                }
+            }
+
+            if (methodInvocation.getMethod().getName().equals(SecurityConfig.USER_MANAGER_SAVE_USER_FROM_PATIENT)) {
+                if (securityUserManager.userHasReadAccessToUnitUser(argument)) {
+                    return ACCESS_GRANTED;
+                }
+            }
+
+            if (methodInvocation.getMethod().getName().equals(SecurityConfig.USER_MANAGER_DELETE)) {
+                if (securityUserManager.userHasReadAccessToUnitUser(argument)) {
+                    return ACCESS_GRANTED;
+                }
+            }
+        } else if (methodInvocation.getMethod().getDeclaringClass().getSimpleName()
+                .equals(PatientManager.class.getSimpleName())) {
+
+            if (methodInvocation.getMethod().getName().equals(SecurityConfig.PATIENT_MANAGER_GET)) {
+                if (securityUserManager.userHasReadAccessToUnitUser(argument)) {
+                    return ACCESS_GRANTED;
+                }
+            }
+
         }
 
+        return ACCESS_DENIED;
+    }
+
+    private int secureUserManagerSaveMethod(User user) {
+        if (user.hasValidId()) {
+            if (securityUserManager.userHasReadAccessToUnitUser(user.getUsername())) {
+                 return ACCESS_GRANTED;
+            }
+        } else {
+            return ACCESS_GRANTED;
+        }
         return ACCESS_DENIED;
     }
 
@@ -163,6 +212,10 @@ public class UnitVoter implements AccessDecisionVoter {
                 Object arg0 = arguments[0];
                 if (arg0 instanceof String) {
                     result = String.valueOf(arg0);
+                } else if (arg0 instanceof UnitAdmin) {
+                    result = ((UnitAdmin) arg0).getUsername();
+                } else if (arg0 instanceof PatientLogon) {
+                    result = ((PatientLogon) arg0).getUsername();
                 }
             }
         } catch (Exception e) {
@@ -180,5 +233,23 @@ public class UnitVoter implements AccessDecisionVoter {
 
     public void setSecurityUserManager(SecurityUserManager securityUserManager) {
         this.securityUserManager = securityUserManager;
+    }
+
+    private User getUserFromArguments(MethodInvocation methodInvocation) {
+
+        User user = null;
+        try {
+            Object[] arguments = methodInvocation.getArguments();
+            if (arguments.length > 0) {
+                Object arg0 = arguments[0];
+                if (arg0 instanceof User) {
+                    user = (User) arg0;
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error("Error parsing user from methodInvocation: " + e.getMessage());
+        }
+
+        return user;
     }
 }
