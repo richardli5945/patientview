@@ -23,6 +23,8 @@
 
 package com.worthsoln.test.security;
 
+import com.worthsoln.patientview.logon.PatientLogon;
+import com.worthsoln.patientview.logon.UnitAdmin;
 import com.worthsoln.patientview.model.Specialty;
 import com.worthsoln.patientview.model.Unit;
 import com.worthsoln.patientview.model.User;
@@ -292,6 +294,256 @@ public class SecurityTest extends BaseServiceTest {
         User checkValidUser = userManager.get(validUser.getUsername());
         assertNotNull(checkValidUser);
         assertEquals("Got the Invalid user ", checkValidUser.getUsername(), "validUser");
+
+    }
+
+    @Test(expected = AccessDeniedException.class)
+    public void testSaveInvalidUserFromUnitAdmin() {
+
+        User adminUser = serviceHelpers.createUserWithMapping("adminuser", "adminuser@test.com", "p", "Adminuser", "UNITCODEA",
+                "nhs1", specialty2);
+        serviceHelpers.createSpecialtyUserRole(specialty2, adminUser, "unitadmin");
+
+        User invalidUser = serviceHelpers.createUserWithMapping("invalidUser", "invalidUser@test.com", "p", "InvalidUser", "TestUnit",
+                "nhs1", specialty2);
+        serviceHelpers.createSpecialtyUserRole(specialty2, invalidUser, "unitadmin");
+
+         UnitAdmin unitAdmin = new UnitAdmin("invalidUser", "pass", "Unit Staff Name",
+                "unitstaff-username1@patientview.org", false, "unitstaff", true);
+
+        loginAsUser(adminUser.getUsername(), specialty2);
+
+        Unit validUnit = new Unit();
+        validUnit.setUnitcode("UNITCODEA");
+        validUnit.setName("UNITCODEA");
+        validUnit.setShortname("UNITCODEA");
+        validUnit.setRenaladminemail("test@mailinator.com");
+        validUnit.setSpecialty(specialty2);
+        unitManager.save(validUnit);
+
+        Unit invalidUnit = new Unit();
+        invalidUnit.setUnitcode("TestUnit");
+        invalidUnit.setName("TestUnit");
+        invalidUnit.setShortname("TestUnit");
+        invalidUnit.setRenaladminemail("testunit@mailinator.com");
+        invalidUnit.setSpecialty(specialty2);
+        unitManager.save(invalidUnit);
+
+        User checkInvalidUser = userManager.saveUserFromUnitAdmin(unitAdmin, validUnit.getUnitcode());
+
+    }
+
+    @Test
+    public void testSaveValidUserFromUnitAdmin() {
+
+        User adminUser = serviceHelpers.createUserWithMapping("adminuser", "adminuser@test.com", "p", "Adminuser", "UNITCODEA",
+                "nhs1", specialty2);
+        serviceHelpers.createSpecialtyUserRole(specialty2, adminUser, "unitadmin");
+
+        User validUser = serviceHelpers.createUserWithMapping("validUser", "validUser@test.com", "p", "ValidUser", "UNITCODEA",
+                "nhs1", specialty2);
+        serviceHelpers.createSpecialtyUserRole(specialty2, validUser, "unitadmin");
+
+         UnitAdmin unitAdmin = new UnitAdmin("validUser", "pass", "Unit Staff Name",
+                "unitstaff-username1@patientview.org", false, "unitstaff", true);
+
+        loginAsUser(adminUser.getUsername(), specialty2);
+
+        Unit validUnit = new Unit();
+        validUnit.setUnitcode("UNITCODEA");
+        validUnit.setName("UNITCODEA");
+        validUnit.setShortname("UNITCODEA");
+        validUnit.setRenaladminemail("test@mailinator.com");
+        validUnit.setSpecialty(specialty2);
+        unitManager.save(validUnit);
+
+        User checkValidUser = userManager.saveUserFromUnitAdmin(unitAdmin, validUnit.getUnitcode());
+        assertNotNull(checkValidUser);
+        assertEquals("Got the Invalid user ", checkValidUser.getUsername(), "validUser");
+
+    }
+
+    @Test
+    public void testSaveValidUserFromPatient() {
+
+        User adminUser = serviceHelpers.createUserWithMapping("adminuser", "adminuser@test.com", "p", "Adminuser", "UNITCODEA",
+                "nhs1", specialty2);
+        serviceHelpers.createSpecialtyUserRole(specialty2, adminUser, "unitadmin");
+
+        User validUser = serviceHelpers.createUserWithMapping("validUser", "validUser@test.com", "p", "ValidUser", "UNITCODEA",
+                "nhs1", specialty2);
+        serviceHelpers.createSpecialtyUserRole(specialty2, validUser, "unitadmin");
+
+        loginAsUser(adminUser.getUsername(), specialty2);
+
+        Unit validUnit = new Unit();
+        validUnit.setUnitcode("UNITCODEA");
+        validUnit.setName("UNITCODEA");
+        validUnit.setShortname("UNITCODEA");
+        validUnit.setRenaladminemail("test@mailinator.com");
+        validUnit.setSpecialty(specialty2);
+        unitManager.save(validUnit);
+
+        PatientLogon patientLogon = new PatientLogon("validUser");
+        User checkValidUser = userManager.saveUserFromPatient(patientLogon);
+        assertNotNull(checkValidUser);
+        assertEquals("Got the Invalid user ", checkValidUser.getUsername(), "validUser");
+    }
+
+    @Test(expected = AccessDeniedException.class)
+    public void testSaveInvalidUserFromPatient() {
+
+        User adminUser = serviceHelpers.createUserWithMapping("adminuser", "adminuser@test.com", "p", "Adminuser", "UNITCODEA",
+                "nhs1", specialty2);
+        serviceHelpers.createSpecialtyUserRole(specialty2, adminUser, "unitadmin");
+
+        User invalidUser = serviceHelpers.createUserWithMapping("invalidUser", "invalidUser@test.com", "p", "InvalidUser", "TestUnit",
+                "nhs1", specialty2);
+        serviceHelpers.createSpecialtyUserRole(specialty2, invalidUser, "unitadmin");
+
+        loginAsUser(adminUser.getUsername(), specialty2);
+
+        Unit validUnit = new Unit();
+        validUnit.setUnitcode("UNITCODEA");
+        validUnit.setName("UNITCODEA");
+        validUnit.setShortname("UNITCODEA");
+        validUnit.setRenaladminemail("test@mailinator.com");
+        validUnit.setSpecialty(specialty2);
+        unitManager.save(validUnit);
+
+        Unit invalidUnit = new Unit();
+        invalidUnit.setUnitcode("TestUnit");
+        invalidUnit.setName("TestUnit");
+        invalidUnit.setShortname("TestUnit");
+        invalidUnit.setRenaladminemail("testunit@mailinator.com");
+        invalidUnit.setSpecialty(specialty2);
+        unitManager.save(invalidUnit);
+
+        PatientLogon patientLogon = new PatientLogon("invalidUser");
+        User checkValidUser = userManager.saveUserFromPatient(patientLogon);
+
+    }
+
+    @Test(expected = AccessDeniedException.class)
+    public void testSaveInvalidUser() {
+
+        User adminUser = serviceHelpers.createUserWithMapping("adminuser", "adminuser@test.com", "p", "Adminuser", "UNITCODEA",
+                "nhs1", specialty2);
+        serviceHelpers.createSpecialtyUserRole(specialty2, adminUser, "unitadmin");
+
+        User invalidUser = serviceHelpers.createUserWithMapping("invalidUser", "invalidUser@test.com", "p", "InvalidUser", "TestUnit",
+                "nhs1", specialty2);
+        serviceHelpers.createSpecialtyUserRole(specialty2, invalidUser, "unitadmin");
+
+        loginAsUser(adminUser.getUsername(), specialty2);
+
+        Unit validUnit = new Unit();
+        validUnit.setUnitcode("UNITCODEA");
+        validUnit.setName("UNITCODEA");
+        validUnit.setShortname("UNITCODEA");
+        validUnit.setRenaladminemail("test@mailinator.com");
+        validUnit.setSpecialty(specialty2);
+        unitManager.save(validUnit);
+
+        Unit invalidUnit = new Unit();
+        invalidUnit.setUnitcode("TestUnit");
+        invalidUnit.setName("TestUnit");
+        invalidUnit.setShortname("TestUnit");
+        invalidUnit.setRenaladminemail("testunit@mailinator.com");
+        invalidUnit.setSpecialty(specialty2);
+        unitManager.save(invalidUnit);
+
+        invalidUser.setEmail("test@hotmail.com");
+        userManager.save(invalidUser);
+
+    }
+
+    @Test
+    public void testSaveValidUser() {
+
+        User adminUser = serviceHelpers.createUserWithMapping("adminuser", "adminuser@test.com", "p", "Adminuser", "UNITCODEA",
+                "nhs1", specialty2);
+        serviceHelpers.createSpecialtyUserRole(specialty2, adminUser, "unitadmin");
+
+        User validUser = serviceHelpers.createUserWithMapping("validUser", "validUser@test.com", "p", "ValidUser", "UNITCODEA",
+                "nhs1", specialty2);
+        serviceHelpers.createSpecialtyUserRole(specialty2, validUser, "unitadmin");
+
+        loginAsUser(adminUser.getUsername(), specialty2);
+
+        Unit validUnit = new Unit();
+        validUnit.setUnitcode("UNITCODEA");
+        validUnit.setName("UNITCODEA");
+        validUnit.setShortname("UNITCODEA");
+        validUnit.setRenaladminemail("test@mailinator.com");
+        validUnit.setSpecialty(specialty2);
+        unitManager.save(validUnit);
+
+        validUser.setEmail("test@hotmail.com");
+        userManager.save(validUser);
+        User user = userManager.get(validUser.getUsername());
+
+        assertNotNull(user);
+        assertEquals("Got the Invalid user ", user.getEmail(), "test@hotmail.com");
+    }
+
+    @Test
+    public void testDeleteValidUser() {
+
+        User adminUser = serviceHelpers.createUserWithMapping("adminuser", "adminuser@test.com", "p", "Adminuser", "UNITCODEA",
+                "nhs1", specialty2);
+        serviceHelpers.createSpecialtyUserRole(specialty2, adminUser, "unitadmin");
+
+        User validUser = serviceHelpers.createUserWithMapping("validUser", "validUser@test.com", "p", "ValidUser", "UNITCODEA",
+                "nhs1", specialty2);
+        serviceHelpers.createSpecialtyUserRole(specialty2, validUser, "unitadmin");
+
+        loginAsUser(adminUser.getUsername(), specialty2);
+
+        Unit validUnit = new Unit();
+        validUnit.setUnitcode("UNITCODEA");
+        validUnit.setName("UNITCODEA");
+        validUnit.setShortname("UNITCODEA");
+        validUnit.setRenaladminemail("test@mailinator.com");
+        validUnit.setSpecialty(specialty2);
+        unitManager.save(validUnit);
+
+        userManager.delete(validUser.getUsername(), validUnit.getUnitcode());
+        User user = userManager.get(validUser.getUsername());
+
+        assertNull(user);
+    }
+
+    @Test(expected = AccessDeniedException.class)
+    public void testDeleteInvalidUser() {
+
+        User adminUser = serviceHelpers.createUserWithMapping("adminuser", "adminuser@test.com", "p", "Adminuser", "UNITCODEA",
+                "nhs1", specialty2);
+        serviceHelpers.createSpecialtyUserRole(specialty2, adminUser, "unitadmin");
+
+        User invalidUser = serviceHelpers.createUserWithMapping("invalidUser", "invalidUser@test.com", "p", "InvalidUser", "TestUnit",
+                "nhs1", specialty2);
+        serviceHelpers.createSpecialtyUserRole(specialty2, invalidUser, "unitadmin");
+
+        loginAsUser(adminUser.getUsername(), specialty2);
+
+        Unit validUnit = new Unit();
+        validUnit.setUnitcode("UNITCODEA");
+        validUnit.setName("UNITCODEA");
+        validUnit.setShortname("UNITCODEA");
+        validUnit.setRenaladminemail("test@mailinator.com");
+        validUnit.setSpecialty(specialty2);
+        unitManager.save(validUnit);
+
+        Unit invalidUnit = new Unit();
+        invalidUnit.setUnitcode("TestUnit");
+        invalidUnit.setName("TestUnit");
+        invalidUnit.setShortname("TestUnit");
+        invalidUnit.setRenaladminemail("testunit@mailinator.com");
+        invalidUnit.setSpecialty(specialty2);
+        unitManager.save(invalidUnit);
+
+         userManager.delete(invalidUser.getUsername(), invalidUnit.getUnitcode());
 
     }
 

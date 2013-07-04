@@ -55,12 +55,16 @@ public interface UserManager {
 
     List<SpecialtyUserRole> getSpecialtyUserRoles(User user);
 
+    @UnitSecured(value = "UNIT_ACCESS")
     void save(User user);
 
+    @UnitSecured(value = "UNIT_ACCESS")
     User saveUserFromUnitAdmin(UnitAdmin unitAdmin, String unitcode);
 
+    @UnitSecured(value = "UNIT_ACCESS")
     User saveUserFromPatient(PatientLogon patientLogon);
 
+    @UnitSecured(value = "UNIT_ACCESS")
     void delete(String username, String unitcode);
 
     List<User> getAllUsers();

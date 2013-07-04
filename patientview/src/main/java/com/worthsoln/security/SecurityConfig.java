@@ -33,4 +33,16 @@ public final class SecurityConfig {
 
     public static final String UNIT_ACCESS = "UNIT_ACCESS";
 
+    public static final String USER_MANAGER_SAVE = "save";
+
+    public static final String USER_MANAGER_GET = "get";
+
+    public static final String USER_MANAGER_SAVE_USER_FROM_UNIT_ADMIN = "saveUserFromUnitAdmin";
+
+    public static final String USER_MANAGER_SAVE_USER_FROM_PATIENT = "saveUserFromPatient";
+
+    public static final String USER_MANAGER_DELETE = "delete";
+
+    public static final String PATIENT_MANAGER_GET = "get";
+
 }
