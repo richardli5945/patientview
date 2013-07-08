@@ -23,15 +23,17 @@
 
 package org.patientview.service.impl;
 
+import org.patientview.patientview.model.User;
 import org.patientview.patientview.model.Specialty;
 import org.patientview.patientview.model.SpecialtyUserRole;
-import org.patientview.patientview.model.User;
 import org.patientview.patientview.model.UserMapping;
 import org.patientview.patientview.model.Unit;
+import org.patientview.patientview.model.Patient;
 import org.patientview.repository.SpecialtyDao;
 import org.patientview.repository.UserDao;
 import org.patientview.repository.SpecialtyUserRoleDao;
 import org.patientview.repository.UserMappingDao;
+import org.patientview.repository.PatientDao;
 import org.patientview.security.model.SecurityUser;
 import org.patientview.service.SecurityUserManager;
 import org.patientview.service.UnitManager;
@@ -66,6 +68,10 @@ public class SecurityUserManagerImpl implements SecurityUserManager {
 
     @Inject
     private SpecialtyUserRoleDao specialtyUserRoleDao;
+
+    @Inject
+    private PatientDao patientDao;
+
 
     @Override
     public String getLoggedInUsername() {
@@ -267,6 +273,23 @@ public class SecurityUserManagerImpl implements SecurityUserManager {
         if (units != null && !units.isEmpty()) {
             for (Unit unit : units) {
                 if (unit != null && unitCode.equals(unit.getUnitcode())) {
+                    isUnitUser = true;
+                    break;
+                }
+            }
+        }
+        return isUnitUser;
+    }
+
+    @Override
+    public boolean userHasReadAccessToUnitPatient(Long patientId) {
+        boolean isUnitUser = false;
+        Patient patient = patientDao.get(patientId);
+        if (patient != null) {
+            List<Unit> units = unitManager.getLoggedInUsersUnits();
+
+            for (Unit unit : units) {
+                if (unit.getUnitcode().equals(patient.getCentreCode())) {
                     isUnitUser = true;
                     break;
                 }

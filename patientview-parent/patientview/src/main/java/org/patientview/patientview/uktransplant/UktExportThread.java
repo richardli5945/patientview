@@ -87,7 +87,7 @@ public class UktExportThread implements Runnable, ParserThread {
     }
 
     private String[][] getPatients() {
-        List patientList = LegacySpringUtils.getPatientManager().getUktPatients();
+        List patientList = LegacySpringUtils.getPatientImporterManager().getUktPatients();
         String[][] patientArray = new String[patientList.size()][NUMBER_OF_COLUMNS];
         for (int i = 0; i < patientList.size(); i++) {
             Patient patient = (Patient) patientList.get(i);

@@ -23,10 +23,7 @@
 
 package org.patientview.service;
 
-import org.patientview.patientview.PatientDetails;
 import org.patientview.patientview.model.Patient;
-import org.patientview.security.UnitSecured;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,13 +33,7 @@ import java.util.List;
  *
  */
 @Transactional(propagation = Propagation.REQUIRED)
-@Secured(value = { "ROLE_ANY_USER" })
-public interface PatientManager {
-
-    @UnitSecured(value = "UNIT_ACCESS")
-    Patient get(Long id);
-
-    Patient get(String nhsno, String unitcode);
+public interface PatientImporterManager {
 
     void save(Patient patient);
 
@@ -52,13 +43,5 @@ public interface PatientManager {
 
     List<Patient> get(String unitCode);
 
-    // Note: generics not used as the result is half user, half patient
-    List getUnitPatientsWithTreatment(String unitcode, String nhsno, String name, boolean showgps);
-
-    // Note: generics not used as the result is half user, half patient
-    List getUnitPatientsAllWithTreatmentDao(String unitcode);
-
     List<Patient> getUktPatients();
-
-    List<PatientDetails> getPatientDetails(String username);
 }

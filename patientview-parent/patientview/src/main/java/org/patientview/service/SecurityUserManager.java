@@ -66,4 +66,6 @@ public interface SecurityUserManager {
     List<SpecialtyUserRole> getSpecialtyUserRoles(User user);
 
     boolean userHasReadAccessToUnit(String unitCode);
+
+    boolean userHasReadAccessToUnitPatient(Long patientId);
 }

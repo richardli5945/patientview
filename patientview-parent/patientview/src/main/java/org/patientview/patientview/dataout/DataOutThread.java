@@ -219,7 +219,7 @@ public class DataOutThread implements Runnable, ParserThread {
         List<Patient> patients = null;
 
         try {
-            patients = LegacySpringUtils.getPatientManager().get(unitCode);
+            patients = LegacySpringUtils.getPatientImporterManager().get(unitCode);
         } catch (Exception e) {
             e.printStackTrace();
         }

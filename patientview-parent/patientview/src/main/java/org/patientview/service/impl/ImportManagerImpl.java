@@ -36,7 +36,6 @@ import org.patientview.patientview.model.Medicine;
 import org.patientview.patientview.model.Patient;
 import org.patientview.patientview.model.TestResult;
 import org.patientview.patientview.parser.ResultParser;
-import org.patientview.patientview.user.UserUtils;
 import org.patientview.patientview.utils.TimestampUtils;
 import org.patientview.service.ImportManager;
 import org.patientview.utils.LegacySpringUtils;
@@ -170,7 +169,7 @@ public class ImportManagerImpl implements ImportManager {
     private void removePatientFromSystem(ResultParser parser) {
         String nhsno = parser.getData("nhsno");
         String unitcode = parser.getData("centrecode");
-        UserUtils.removePatientFromSystem(nhsno, unitcode);
+        LegacySpringUtils.getPatientImporterManager().removePatientFromSystem(nhsno, unitcode);
     }
 
     private void updatePatientData(ResultParser parser) {
@@ -238,8 +237,8 @@ public class ImportManagerImpl implements ImportManager {
     }
 
     private void updatePatientDetails(Patient patient) {
-        LegacySpringUtils.getPatientManager().delete(patient.getNhsno(), patient.getCentreCode());
-        LegacySpringUtils.getPatientManager().save(patient);
+        LegacySpringUtils.getPatientImporterManager().delete(patient.getNhsno(), patient.getCentreCode());
+        LegacySpringUtils.getPatientImporterManager().save(patient);
     }
 
     private void updateCentreDetails(Centre centre) {
