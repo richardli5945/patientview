@@ -28,10 +28,12 @@ import com.worthsoln.patientview.model.Specialty;
 import com.worthsoln.patientview.model.SpecialtyUserRole;
 import com.worthsoln.patientview.model.UserMapping;
 import com.worthsoln.patientview.model.Unit;
+import com.worthsoln.patientview.model.Patient;
 import com.worthsoln.repository.SpecialtyDao;
 import com.worthsoln.repository.UserDao;
 import com.worthsoln.repository.SpecialtyUserRoleDao;
 import com.worthsoln.repository.UserMappingDao;
+import com.worthsoln.repository.PatientDao;
 import com.worthsoln.security.model.SecurityUser;
 import com.worthsoln.service.SecurityUserManager;
 import com.worthsoln.service.UnitManager;
@@ -66,6 +68,10 @@ public class SecurityUserManagerImpl implements SecurityUserManager {
 
     @Inject
     private SpecialtyUserRoleDao specialtyUserRoleDao;
+
+    @Inject
+    private PatientDao patientDao;
+
 
     @Override
     public String getLoggedInUsername() {
@@ -267,6 +273,23 @@ public class SecurityUserManagerImpl implements SecurityUserManager {
         if (units != null && !units.isEmpty()) {
             for (Unit unit : units) {
                 if (unit != null && unitCode.equals(unit.getUnitcode())) {
+                    isUnitUser = true;
+                    break;
+                }
+            }
+        }
+        return isUnitUser;
+    }
+
+    @Override
+    public boolean userHasReadAccessToUnitPatient(Long patientId) {
+        boolean isUnitUser = false;
+        Patient patient = patientDao.get(patientId);
+        if (patient != null) {
+            List<Unit> units = unitManager.getLoggedInUsersUnits();
+
+            for (Unit unit : units) {
+                if (unit.getUnitcode().equals(patient.getCentreCode())) {
                     isUnitUser = true;
                     break;
                 }

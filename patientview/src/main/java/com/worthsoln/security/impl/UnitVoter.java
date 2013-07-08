@@ -176,7 +176,8 @@ public class UnitVoter implements AccessDecisionVoter {
                 .equals(PatientManager.class.getSimpleName())) {
 
             if (methodInvocation.getMethod().getName().equals(SecurityConfig.PATIENT_MANAGER_GET)) {
-                if (securityUserManager.userHasReadAccessToUnitUser(argument)) {
+
+                if (securityUserManager.userHasReadAccessToUnitPatient(getPatientLongArgument(methodInvocation))) {
                     return ACCESS_GRANTED;
                 }
             }
@@ -251,5 +252,23 @@ public class UnitVoter implements AccessDecisionVoter {
         }
 
         return user;
+    }
+
+    private Long getPatientLongArgument(MethodInvocation methodInvocation) {
+
+        Long rtnValue = null;
+        try {
+            Object[] arguments = methodInvocation.getArguments();
+            if (arguments.length > 0) {
+                Object arg0 = arguments[0];
+                if (arg0 instanceof Long) {
+                    rtnValue = (Long) arg0;
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error("Error parsing user from methodInvocation: " + e.getMessage());
+        }
+
+        return rtnValue;
     }
 }

@@ -41,6 +41,7 @@ import com.worthsoln.service.MedicineManager;
 import com.worthsoln.service.MessageManager;
 import com.worthsoln.service.NewsManager;
 import com.worthsoln.service.PatientManager;
+import com.worthsoln.service.PatientImporterManager;
 import com.worthsoln.service.ResultHeadingManager;
 import com.worthsoln.service.SecurityUserManager;
 import com.worthsoln.service.SplashPageManager;
@@ -86,6 +87,8 @@ public final class LegacySpringUtils {
     private static NewsManager newsManager;
 
     private static PatientManager patientManager;
+
+    private static PatientImporterManager patientImporterManager;
 
     private static ResultHeadingManager resultHeadingManager;
 
@@ -229,6 +232,14 @@ public final class LegacySpringUtils {
 
     public static void setPatientManager(PatientManager patientManager) {
         LegacySpringUtils.patientManager = patientManager;
+    }
+
+    public static PatientImporterManager getPatientImporterManager() {
+        return patientImporterManager;
+    }
+
+    public static void setPatientImporterManager(PatientImporterManager patientImporterManager) {
+        LegacySpringUtils.patientImporterManager = patientImporterManager;
     }
 
     public static ResultHeadingManager getResultHeadingManager() {

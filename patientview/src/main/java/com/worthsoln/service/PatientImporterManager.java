@@ -20,31 +20,28 @@
  * @copyright Copyright (c) 2004-2013, Worth Solutions Limited
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-package com.worthsoln.security;
+
+package com.worthsoln.service;
+
+import com.worthsoln.patientview.model.Patient;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
- *      Used to annotate service level methods that require security in addition to Role.
+ *
  */
-public final class SecurityConfig {
+@Transactional(propagation = Propagation.REQUIRED)
+public interface PatientImporterManager {
 
-    private SecurityConfig() {
+    void save(Patient patient);
 
-    }
+    void delete(String nhsno, String unitcode);
 
-    public static final String UNIT_ACCESS = "UNIT_ACCESS";
+    void removePatientFromSystem(String nhsno, String unitcode);
 
-    public static final String USER_MANAGER_SAVE = "save";
+    List<Patient> get(String unitCode);
 
-    public static final String USER_MANAGER_GET = "get";
-
-    public static final String USER_MANAGER_SAVE_USER_FROM_UNIT_ADMIN = "saveUserFromUnitAdmin";
-
-    public static final String USER_MANAGER_SAVE_USER_FROM_PATIENT = "saveUserFromPatient";
-
-    public static final String USER_MANAGER_DELETE = "delete";
-
-    public static final String PATIENT_MANAGER_GET = "get";
-
-    public static final String PATIENT_MANAGER_REMOVE_PATIENT_FROM_SYSTEM = "removePatientFromSystem";
-
+    List<Patient> getUktPatients();
 }

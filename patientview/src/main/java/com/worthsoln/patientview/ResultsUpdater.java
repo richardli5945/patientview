@@ -35,7 +35,6 @@ import com.worthsoln.patientview.model.Medicine;
 import com.worthsoln.patientview.model.Patient;
 import com.worthsoln.patientview.model.TestResult;
 import com.worthsoln.patientview.parser.ResultParser;
-import com.worthsoln.patientview.user.UserUtils;
 import com.worthsoln.patientview.utils.TimestampUtils;
 import com.worthsoln.utils.LegacySpringUtils;
 import org.slf4j.Logger;
@@ -158,7 +157,7 @@ public class ResultsUpdater {
     private void removePatientFromSystem(ResultParser parser) {
         String nhsno = parser.getData("nhsno");
         String unitcode = parser.getData("centrecode");
-        UserUtils.removePatientFromSystem(nhsno, unitcode);
+        LegacySpringUtils.getPatientImporterManager().removePatientFromSystem(nhsno, unitcode);
     }
 
     private void updatePatientData(ResultParser parser) {
@@ -226,8 +225,8 @@ public class ResultsUpdater {
     }
 
     private void updatePatientDetails(Patient patient) {
-        LegacySpringUtils.getPatientManager().delete(patient.getNhsno(), patient.getCentreCode());
-        LegacySpringUtils.getPatientManager().save(patient);
+        LegacySpringUtils.getPatientImporterManager().delete(patient.getNhsno(), patient.getCentreCode());
+        LegacySpringUtils.getPatientImporterManager().save(patient);
     }
 
     private void updateCentreDetails(Centre centre) {

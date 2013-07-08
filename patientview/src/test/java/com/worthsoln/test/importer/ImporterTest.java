@@ -35,6 +35,7 @@ import com.worthsoln.service.LetterManager;
 import com.worthsoln.service.LogEntryManager;
 import com.worthsoln.service.MedicineManager;
 import com.worthsoln.service.PatientManager;
+import com.worthsoln.service.PatientImporterManager;
 import com.worthsoln.service.TestResultManager;
 import com.worthsoln.service.TimeManager;
 import com.worthsoln.service.UnitManager;
@@ -90,6 +91,9 @@ public class ImporterTest extends BaseDaoTest {
 
     @Inject
     private TestResultManager testResultManager;
+
+    @Inject
+    private PatientImporterManager patientImporterManager;
 
     @Inject
     private IbdManager ibdManager;
@@ -170,7 +174,7 @@ public class ImporterTest extends BaseDaoTest {
         assertEquals("Incorrect number of centres", 1, centres.size());
         assertEquals("Incorrect centre", "A", centres.get(0).getCentreCode());
 
-        List<Patient> patients = patientManager.get("A");
+        List<Patient> patients = patientImporterManager.get("A");
 
         assertEquals("Incorrect number of patients", 1, patients.size());
         assertEquals("Incorrect patient", "1234567890", patients.get(0).getNhsno());
@@ -450,7 +454,7 @@ public class ImporterTest extends BaseDaoTest {
         assertEquals("Incorrect number of centres", 1, centres.size());
         assertEquals("Incorrect centre", "RM301", centres.get(0).getCentreCode());
 
-        List<Patient> patients = patientManager.get("RM301");
+        List<Patient> patients = patientImporterManager.get("RM301");
 
         assertEquals("Incorrect number of patients", 1, patients.size());
         assertEquals("Incorrect patient", "9876543210", patients.get(0).getNhsno());

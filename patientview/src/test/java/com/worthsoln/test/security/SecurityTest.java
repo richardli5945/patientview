@@ -25,15 +25,12 @@ package com.worthsoln.test.security;
 
 import com.worthsoln.patientview.logon.PatientLogon;
 import com.worthsoln.patientview.logon.UnitAdmin;
-import com.worthsoln.patientview.model.Specialty;
-import com.worthsoln.patientview.model.Unit;
-import com.worthsoln.patientview.model.User;
-import com.worthsoln.patientview.model.Feedback;
-import com.worthsoln.patientview.model.UserMapping;
+import com.worthsoln.patientview.model.*;
 import com.worthsoln.service.FeedbackManager;
 import com.worthsoln.service.SecurityUserManager;
 import com.worthsoln.service.UnitManager;
 import com.worthsoln.service.UserManager;
+import com.worthsoln.service.PatientManager;
 import com.worthsoln.test.helpers.SecurityHelpers;
 import com.worthsoln.test.helpers.ServiceHelpers;
 import com.worthsoln.test.service.BaseServiceTest;
@@ -82,6 +79,9 @@ public class SecurityTest extends BaseServiceTest {
 
     @Inject
     private UnitManager unitManager;
+
+    @Inject
+    private PatientManager patientManager;
 
     // Test suite wide references
     private User user;
@@ -544,6 +544,80 @@ public class SecurityTest extends BaseServiceTest {
         unitManager.save(invalidUnit);
 
          userManager.delete(invalidUser.getUsername(), invalidUnit.getUnitcode());
+
+    }
+
+    @Test
+    public void testGetValidPatient() {
+
+        User adminUser = serviceHelpers.createUserWithMapping("adminuser", "adminuser@test.com", "p", "Adminuser", "UNITCODEA",
+                "nhs1", specialty2);
+        serviceHelpers.createSpecialtyUserRole(specialty2, adminUser, "unitadmin");
+
+        User validUser = serviceHelpers.createUserWithMapping("validUser", "validUser@test.com", "p", "ValidUser", "UNITCODEA",
+                "nhsno1", specialty2);
+        serviceHelpers.createSpecialtyUserRole(specialty2, validUser, "unitadmin");
+
+        loginAsUser(adminUser.getUsername(), specialty2);
+
+        Unit validUnit = new Unit();
+        validUnit.setUnitcode("UNITCODEA");
+        validUnit.setName("UNITCODEA");
+        validUnit.setShortname("UNITCODEA");
+        validUnit.setRenaladminemail("test@mailinator.com");
+        validUnit.setSpecialty(specialty2);
+        unitManager.save(validUnit);
+
+        Patient validPatient = new Patient();
+        // required fields
+        validPatient.setNhsno("nhsno1");
+        validPatient.setCentreCode("UNITCODEA");
+        validPatient.setSurname("validPatient");
+
+        patientManager.save(validPatient);
+        patientManager.get(validPatient.getId());
+
+        assertNotNull(validPatient);
+        assertEquals("Incorrect results", "validPatient", validPatient.getSurname());
+    }
+
+    @Test(expected = AccessDeniedException.class)
+    public void testGetInvalidPatient() {
+
+        User adminUser = serviceHelpers.createUserWithMapping("adminuser", "adminuser@test.com", "p", "Adminuser", "UNITCODEA",
+                "nhs1", specialty2);
+        serviceHelpers.createSpecialtyUserRole(specialty2, adminUser, "unitadmin");
+
+        User invalidUser = serviceHelpers.createUserWithMapping("invalidUser", "invalidUser@test.com", "p", "InvalidUser", "TestUnit",
+                "nhsno1", specialty2);
+        serviceHelpers.createSpecialtyUserRole(specialty2, invalidUser, "unitadmin");
+
+        loginAsUser(adminUser.getUsername(), specialty2);
+
+        Unit validUnit = new Unit();
+        validUnit.setUnitcode("UNITCODEA");
+        validUnit.setName("UNITCODEA");
+        validUnit.setShortname("UNITCODEA");
+        validUnit.setRenaladminemail("test@mailinator.com");
+        validUnit.setSpecialty(specialty2);
+        unitManager.save(validUnit);
+
+        Unit invalidUnit = new Unit();
+        invalidUnit.setUnitcode("TestUnit");
+        invalidUnit.setName("TestUnit");
+        invalidUnit.setShortname("TestUnit");
+        invalidUnit.setRenaladminemail("testunit@mailinator.com");
+        invalidUnit.setSpecialty(specialty2);
+        unitManager.save(invalidUnit);
+
+        Patient invalidPatient = new Patient();
+        // required fields
+        invalidPatient.setNhsno("nhsno1");
+        invalidPatient.setCentreCode("TestUnit");
+        invalidPatient.setSurname("invalidPatient");
+
+        patientManager.save(invalidPatient);
+        patientManager.get(invalidPatient.getId());
 
     }
 

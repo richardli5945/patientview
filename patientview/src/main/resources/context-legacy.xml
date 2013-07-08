@@ -155,6 +155,15 @@
         </property>
     </bean>
 
+    <bean id="setPatientImporterManager" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod" value="com.worthsoln.utils.LegacySpringUtils.setPatientImporterManager"/>
+        <property name="arguments">
+            <list>
+                <ref bean="patientImporterManager"/>
+            </list>
+        </property>
+    </bean>
+
     <bean id="setResultHeadingManager" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
         <property name="staticMethod" value="com.worthsoln.utils.LegacySpringUtils.setResultHeadingManager"/>
         <property name="arguments">

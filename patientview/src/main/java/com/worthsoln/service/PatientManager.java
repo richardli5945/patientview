@@ -25,6 +25,8 @@ package com.worthsoln.service;
 
 import com.worthsoln.patientview.PatientDetails;
 import com.worthsoln.patientview.model.Patient;
+import com.worthsoln.security.UnitSecured;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,8 +36,10 @@ import java.util.List;
  *
  */
 @Transactional(propagation = Propagation.REQUIRED)
+@Secured(value = { "ROLE_ANY_USER" })
 public interface PatientManager {
 
+    @UnitSecured(value = "UNIT_ACCESS")
     Patient get(Long id);
 
     Patient get(String nhsno, String unitcode);
