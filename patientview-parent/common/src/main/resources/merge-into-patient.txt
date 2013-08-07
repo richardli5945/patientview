@@ -1,0 +1,5 @@
+67 - PV/Radar - merge tbl_demographics into patient table
+
+1. The script of this story is in common/src/resources/sql/features/21/, there are two files "21.sql" and "data.sql".
+2. Run the  "21.sql" script first to update the patient table's structure.
+   Then run the data.sql script to import/update the data from tbl_demographics.
