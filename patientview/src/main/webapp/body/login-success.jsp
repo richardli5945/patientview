@@ -86,27 +86,3 @@
 %>
 
 <a href="/password-advice.jsp">Find out more about secure passwords.</a>
-</div>
-<div class="span4 seperatingBorders pull-right">
-    <h3 class="mediumBlueTitle titleSeperator">News</h3>
-
-    <logic:present name="newses">
-        <logic:empty name="newses">
-            <p>
-                <i>There are currently no news items.</i>
-            </p>
-        </logic:empty>
-        <logic:notEmpty name="newses">
-            <ul class="linkList">
-                <logic:iterate id="news" name="newses">
-                    <li>
-                        <html:link action="/newsView" paramId="id" paramName="news" paramProperty="id" styleClass="readMoreParagraph">
-                            &raquo; <bean:write name="news" property="headline" />
-                        </html:link>
-                    </li>
-                </logic:iterate>
-            </ul>
-        </logic:notEmpty>
-
-    </logic:present>
-</div>
