@@ -61,6 +61,9 @@ public class JoinRequest extends BaseModel {
     @Column(nullable = true)
     private String notes;
 
+    @Column(nullable = true)
+    private String taskTitle;
+
     @Transient
     private String antiSpamAnswer;
 
@@ -76,6 +79,7 @@ public class JoinRequest extends BaseModel {
         this.unitcode = unitcode;
         this.email = email;
         this.dateOfRequest = dateOfRequest;
+        this.taskTitle = "Join request";
         this.isComplete = false;
     }
 
@@ -173,5 +177,13 @@ public class JoinRequest extends BaseModel {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public String getTaskTitle() {
+        return taskTitle;
+    }
+
+    public void setTaskTitle(String taskTitle) {
+        this.taskTitle = taskTitle;
     }
 }
